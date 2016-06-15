@@ -1,0 +1,490 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package jenkins.sikulix.GUI.Internal;
+
+import java.awt.Component;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.sql.Connection;
+import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import jenkins.sikulix.Dao.DoctorDao;
+import jenkins.sikulix.Entity.Doctor;
+import jenkins.sikulix.Service.DoctorService;
+import jenkins.sikulix.Service.SpecialistService;
+import jenkins.sikulix.TableModel.TableModelDoctor;
+import jenkins.sikulix.TableModel.TableModelSpecialist;
+
+/**
+ *
+ * @author Fachrul Pralienka BM
+ */
+public class FrmIntDoctor extends javax.swing.JInternalFrame {
+
+    DoctorService ds = new DoctorService();
+    TableModelDoctor tableModelDoctor = new TableModelDoctor();
+    SpecialistService ss = new SpecialistService();
+    TableModelSpecialist tableModelSpecialist = new TableModelSpecialist();
+    Connection connection;
+
+    /** Creates new form FrmIntDoctor */
+    public FrmIntDoctor() {
+        initComponents();
+        tableDoctor.setModel(tableModelDoctor);
+        tableModelDoctor.setData(ds.serviceGetAllDoctor());
+        if (!DoctorDao.hasilGetAll.equals("ok")) {
+            JOptionPane.showMessageDialog(null, DoctorDao.hasilGetAll, "Get All Doctor Gagal!", JOptionPane.ERROR_MESSAGE);
+        }
+        sesuaikan();
+
+        tableModelSpecialist.setData(ss.serviceGetAllSpecialist());
+        int a = tableModelSpecialist.getRowCount();
+        chooseSpecialist.setModel(new javax.swing.DefaultComboBoxModel(ss.serviceGetAllNamaSpecialist(a)));
+
+        tableDoctor.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+            public void valueChanged(ListSelectionEvent e) {
+                int row = tableDoctor.getSelectedRow();
+                if (row != -1) {
+
+                    String nama = tableDoctor.getValueAt(row, 1).toString();
+                    String spesialis = tableDoctor.getValueAt(row, 2).toString();
+                    String tglKerja = tableDoctor.getValueAt(row, 3).toString();
+                    String alamat = tableDoctor.getValueAt(row, 4).toString();
+                    txtNmDoctor.setText(nama);
+                    chooseSpecialist.setSelectedItem(ss.serviceGetNmSpecialist(spesialis));
+                    txtTglKerja.setText(tglKerja);
+                    txtAlamat.setText(alamat);
+
+                    btnInsert.setEnabled(false);
+                    btnUpdate.setEnabled(true);
+                    btnDelete.setEnabled(true);
+                }
+            }
+        });
+
+        txtAlamat.addKeyListener(new KeyAdapter() {
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_TAB) {
+                    txtAlamat.transferFocus();
+                    e.consume();
+                }
+            }
+        });
+
+        btnInsert.setEnabled(true);
+        btnUpdate.setEnabled(false);
+        btnDelete.setEnabled(false);
+
+        txtNmDoctor.requestFocus();
+        txtNmDoctor.setText("");
+        chooseSpecialist.setSelectedIndex(0);
+        txtTglKerja.setText("");
+        txtAlamat.setText("");
+        txtFindDoctor.setText("");
+
+    }
+
+    public void clear() {
+        btnInsert.setEnabled(true);
+        btnUpdate.setEnabled(false);
+        btnDelete.setEnabled(false);
+
+        txtNmDoctor.requestFocus();
+        txtNmDoctor.setText("");
+        chooseSpecialist.setSelectedIndex(0);
+        txtTglKerja.setText("");
+        txtAlamat.setText("");
+        tableModelDoctor.setData(ds.serviceGetAllDoctor());
+        txtFindDoctor.setText("");
+
+        sesuaikan();
+    }
+
+    public final void sesuaikan() {
+        TableColumnModel tcm = tableDoctor.getColumnModel();
+        for (int kolom = 0; kolom < tcm.getColumnCount(); kolom++) {
+            int lebarKolomMax = 0;
+            for (int baris = 0; baris < tableDoctor.getRowCount(); baris++) {
+                TableCellRenderer tcr = tableDoctor.getCellRenderer(baris, kolom);
+                Object nilaiTable = tableDoctor.getValueAt(baris, kolom);
+                Component comp = tcr.getTableCellRendererComponent(tableDoctor, nilaiTable,
+                        false, false, baris, kolom);
+                lebarKolomMax = Math.max(comp.getPreferredSize().width, lebarKolomMax);
+            }
+            TableColumn tc = tcm.getColumn(kolom);
+            tc.setPreferredWidth(lebarKolomMax);
+        }
+    }
+
+    /** This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        txtNmDoctor = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        txtTglKerja = new javax.swing.JTextField();
+        chooseSpecialist = new javax.swing.JComboBox();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtAlamat = new javax.swing.JTextArea();
+        btnInsert = new javax.swing.JButton();
+        btnUpdate = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
+        btnRefresh = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tableDoctor = new javax.swing.JTable();
+        txtFindDoctor = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+
+        setClosable(true);
+        setIconifiable(true);
+        setMaximizable(true);
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Doctor"));
+
+        txtNmDoctor.setName("txtNamaDokter"); // NOI18N
+
+        jLabel3.setText("Specialist");
+
+        jLabel2.setText("Doctor Name");
+
+        txtTglKerja.setName("txtTglKerja"); // NOI18N
+
+        chooseSpecialist.setName("chooseSpecialist"); // NOI18N
+
+        jLabel8.setText(":");
+
+        jLabel7.setText(":");
+
+        jLabel10.setText(":");
+
+        jLabel9.setText(":");
+
+        jLabel4.setText("Employement Date");
+
+        jLabel5.setText("Address");
+
+        txtAlamat.setColumns(20);
+        txtAlamat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        txtAlamat.setLineWrap(true);
+        txtAlamat.setRows(5);
+        txtAlamat.setName("txtAlamat"); // NOI18N
+        jScrollPane1.setViewportView(txtAlamat);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtNmDoctor, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chooseSpecialist, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtTglKerja, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(368, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel7)
+                    .addComponent(txtNmDoctor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel8)
+                    .addComponent(chooseSpecialist, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel9)
+                    .addComponent(txtTglKerja, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel5)
+                        .addComponent(jLabel10))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        btnInsert.setText("Insert");
+        btnInsert.setName("btnInsert"); // NOI18N
+        btnInsert.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInsertActionPerformed(evt);
+            }
+        });
+
+        btnUpdate.setText("Update");
+        btnUpdate.setName("btnUpdate"); // NOI18N
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActionPerformed(evt);
+            }
+        });
+
+        btnDelete.setText("Delete");
+        btnDelete.setName("btnDelete"); // NOI18N
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
+        btnRefresh.setText("Refresh");
+        btnRefresh.setName("btnRefresh"); // NOI18N
+        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshActionPerformed(evt);
+            }
+        });
+
+        tableDoctor.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tableDoctor.setName("tableDoctor"); // NOI18N
+        jScrollPane2.setViewportView(tableDoctor);
+
+        txtFindDoctor.setName("txtCari"); // NOI18N
+        txtFindDoctor.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtFindDoctorKeyReleased(evt);
+            }
+        });
+
+        jLabel1.setText("Search doctor by Name or ID");
+
+        jLabel6.setText(":");
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 809, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnInsert, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 371, Short.MAX_VALUE)
+                        .addComponent(btnRefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel6))
+                    .addComponent(txtFindDoctor, javax.swing.GroupLayout.PREFERRED_SIZE, 394, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnInsert, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnRefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 245, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtFindDoctor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(19, 19, 19))
+        );
+
+        jPanel1.getAccessibleContext().setAccessibleName("Doctor");
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertActionPerformed
+        // TODO add your handling code here:
+        String nmDoctor = txtNmDoctor.getText();
+        String tglKerja = txtTglKerja.getText();
+        String alamat = txtAlamat.getText();
+        int spesialis = chooseSpecialist.getSelectedIndex();
+
+        if ((nmDoctor.equals("")) || (spesialis == -1) || (tglKerja.equals("")) || (alamat.equals(""))) {
+            JOptionPane.showMessageDialog(rootPane, "Data tidak boleh kosong!", "Insert Doctor Gagal!", JOptionPane.ERROR_MESSAGE);
+        } else {
+            String id = ss.serviceGetIDSpecialist(chooseSpecialist.getSelectedItem().toString());
+//            if (!SpecialistDao.hasilGetIDSpecialist.equals("ok")) {
+//                JOptionPane.showMessageDialog(null, SpecialistDao.hasilGetIDSpecialist, "Error - Get ID Specialist", JOptionPane.ERROR_MESSAGE);
+//            }
+            Doctor d = new Doctor();
+            d.setNoDoctor("DOK." + ds.serviceGetMaxNoDoctor());
+            d.setNmDoctor(nmDoctor.toUpperCase());
+            d.setIdSpecialist(id);
+            d.setDateEmployDoctor(tglKerja);
+            d.setAddressDoctor(alamat);
+            ds.serviceInsertDoctor(d);
+            if (DoctorDao.hasilInsert.equals("ok")) {
+                JOptionPane.showMessageDialog(null, "Data dokter berhasil ditambah!", "Insert Doctor", JOptionPane.INFORMATION_MESSAGE);
+                clear();
+            } else {
+                JOptionPane.showMessageDialog(null, DoctorDao.hasilInsert, "Insert Doctor Gagal!", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btnInsertActionPerformed
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        // TODO add your handling code here:
+        String nmDoctor = txtNmDoctor.getText();
+        String tglKerja = txtTglKerja.getText();
+        String alamat = txtAlamat.getText();
+        int spesialis = chooseSpecialist.getSelectedIndex();
+
+        if ((nmDoctor.equals("")) || (spesialis == -1) || (tglKerja.equals("")) || (alamat.equals(""))) {
+            JOptionPane.showMessageDialog(rootPane, "Data tidak boleh kosong!", "Update Doctor Gagal!", JOptionPane.ERROR_MESSAGE);
+        } else {
+            String id = ss.serviceGetIDSpecialist(chooseSpecialist.getSelectedItem().toString());
+            Doctor d = new Doctor();
+            d.setNmDoctor(txtNmDoctor.getText().toUpperCase());
+            d.setIdSpecialist(id);
+            d.setDateEmployDoctor(txtTglKerja.getText());
+            d.setAddressDoctor(txtAlamat.getText());
+
+            int row = tableDoctor.getSelectedRow();
+            if (row != -1) {
+                ds.serviceUpdateDoctor(d, tableDoctor.getValueAt(row, 0).toString());
+                if (DoctorDao.hasilUpdate.equals("ok")) {
+                    JOptionPane.showMessageDialog(null, "Data dokter berhasil diubah!", "Update Doctor", JOptionPane.INFORMATION_MESSAGE);
+                    clear();
+                } else {
+                    JOptionPane.showMessageDialog(null, DoctorDao.hasilUpdate, "Update Doctor Gagal!", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        // TODO add your handling code here:
+        int row = tableDoctor.getSelectedRow();
+        if (row == -1) {
+            return;
+        }
+
+        int pilih = JOptionPane.showConfirmDialog(rootPane,
+                "Yakin ingin mengahapus data yang dipilih?",
+                "Konfirmasi",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (pilih == JOptionPane.OK_OPTION) {
+            ds.serviceDeleteDoctor(tableDoctor.getValueAt(row, 0).toString());
+            if (DoctorDao.hasilDelete.equals("ok")) {
+                JOptionPane.showMessageDialog(null, "Data dokter berhasil dihapus!", "Delete Doctor", JOptionPane.INFORMATION_MESSAGE);
+                clear();
+            } else {
+                JOptionPane.showMessageDialog(null, DoctorDao.hasilDelete, "Delete Doctor Gagal!", JOptionPane.ERROR_MESSAGE);
+            }
+
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+        // TODO add your handling code here:
+        clear();
+    }//GEN-LAST:event_btnRefreshActionPerformed
+
+    private void txtFindDoctorKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFindDoctorKeyReleased
+        // TODO add your handling code here:
+        tableModelDoctor.setData(ds.serviceGetAllDoctorByNo(txtFindDoctor.getText()));
+        if (tableModelDoctor.getRowCount() == 0) {
+            tableModelDoctor.setData(ds.serviceGetAllDoctorByNm(txtFindDoctor.getText()));
+        }
+        txtNmDoctor.setText("");
+        chooseSpecialist.setSelectedIndex(0);
+        txtTglKerja.setText("");
+        txtAlamat.setText("");
+
+        btnInsert.setEnabled(true);
+        btnUpdate.setEnabled(false);
+        btnDelete.setEnabled(false);
+    }//GEN-LAST:event_txtFindDoctorKeyReleased
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnInsert;
+    private javax.swing.JButton btnRefresh;
+    private javax.swing.JButton btnUpdate;
+    private javax.swing.JComboBox chooseSpecialist;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable tableDoctor;
+    private javax.swing.JTextArea txtAlamat;
+    private javax.swing.JTextField txtFindDoctor;
+    private javax.swing.JTextField txtNmDoctor;
+    private javax.swing.JTextField txtTglKerja;
+    // End of variables declaration//GEN-END:variables
+}
