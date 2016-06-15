@@ -11,7 +11,6 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.sikuli.script.Screen;
@@ -37,7 +36,7 @@ public class FrmMainTest {
     }
     
     @Test
-    public void a_scenario_01()throws Exception{        
+    public void testScenario()throws Exception{        
         Screen screen = new Screen();                                
         screen.click("/images/07master.png",0);                
         screen.click("/images/08specialistData.png",0);                
@@ -57,10 +56,5 @@ public class FrmMainTest {
         screen.exists("/images/21tableEmpty.png",0);
         screen.click("/images/22closeInternal.png",0);           
     }   
-    
-    @AfterClass
-    public static void tearDownClass() {                
-        System.exit(0);
-    }
 
 }
